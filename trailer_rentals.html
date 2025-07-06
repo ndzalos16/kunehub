@@ -1,0 +1,1603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trailer Rentals - Your Premier Trailer Hiring Solution</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Base styles for the always-light mode */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* Very light background, close to white but softer */
+            color: #1f2937; /* Dark gray text */
+        }
+        .bg-white {
+            background-color: #ffffff; /* Pure white for elements that should be white */
+        }
+        .text-gray-800 {
+            color: #1f2937; /* Very dark gray for prominent text */
+        }
+        .text-gray-900 {
+            color: #111827; /* Near black for main headings */
+        }
+        .text-gray-600 {
+            color: #4b5563; /* Medium gray for secondary text/links */
+        }
+        .text-gray-700 {
+            color: #374151; /* Slightly darker gray for paragraphs */
+        }
+        .bg-gray-50 {
+            background-color: #f9fafb; /* Lightest gray for alternate sections */
+        }
+        .bg-gray-100 {
+            background-color: #f3f4f6; /* Light blue-gray for cards */
+        }
+        .border-gray-300 {
+            border-color: #d1d5db; /* Light subtle border */
+        }
+        .bg-blue-50 {
+            background-color: #eff6ff; /* Very light blue background for AI output */
+            color: #1e40af; /* Dark blue text for AI output */
+        }
+        input, textarea {
+            background-color: #ffffff; /* White background for inputs */
+            color: #1f2937; /* Dark text for inputs */
+            border-color: #cbd5e1;
+        }
+        input::placeholder, textarea::placeholder {
+            color: #6b7280;
+        }
+        .bg-gradient-to-r {
+            background-image: linear-gradient(to right, #2563eb, #1e3a8a); /* Original blue gradient */
+        }
+        .shadow-md {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* Standard light shadow */
+        }
+
+
+        /* Custom scrollbar for a slightly more polished look */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e2e8f0;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Animation for elements appearing on scroll */
+        .animate-on-scroll-hidden {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+            transition-delay: var(--delay, 0s); /* Use CSS variable for staggered delay */
+        }
+
+        .animate-on-scroll-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Keyframe animation for Hero section text (starts immediately on load) */
+        @keyframes fade-in-up {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in-up {
+            animation: fade-in-up 0.8s ease-out forwards;
+        }
+        .animate-fade-in-up.delay-200 { animation-delay: 0.2s; }
+        .animate-fade-in-up.delay-400 { animation-delay: 0.4s; }
+
+        /* Loading spinner */
+        .loader {
+            border: 4px solid #f3f3f3; /* Light grey */
+            border-top: 4px solid #3498db; /* Blue */
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Mobile Menu Overlay specific styles */
+        #mobile-menu {
+            /* Ensure it covers the entire screen and sits on top */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.98); /* Near opaque white background */
+            z-index: 1000; /* Ensure it's above everything else */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.3s ease-in-out; /* Smooth fade in/out */
+            opacity: 0;
+            visibility: hidden; /* Hidden by default */
+        }
+
+        #mobile-menu.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        #mobile-menu .close-button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+
+        /* Modal specific styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7); /* Dark semi-transparent background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: #ffffff;
+            padding: 2.5rem;
+            border-radius: 0.75rem; /* rounded-lg */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-xl */
+            position: relative;
+            max-width: 90%; /* Responsive width */
+            width: 500px; /* Max width for desktop */
+            max-height: 90vh; /* Max height to prevent overflow on small screens */
+            overflow-y: auto; /* Enable scrolling for long content */
+            transform: translateY(20px); /* Initial state for animation */
+            transition: transform 0.3s ease-out;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0); /* Animate into view */
+        }
+
+        /* Category filter button styles */
+        .category-button {
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px; /* Full rounded corners */
+            font-weight: 500; /* Medium font weight */
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid #a0aec0; /* Light border for inactive */
+            color: #4b5563; /* Dark text for inactive */
+            background-color: #ffffff;
+            white-space: nowrap; /* Prevent wrapping */
+        }
+        .category-button:hover {
+            background-color: #e2e8f0; /* Lighter hover background */
+            border-color: #4299e1; /* Blue border on hover */
+            color: #2b6cb0; /* Darker blue text on hover */
+        }
+        .category-button.active {
+            background-color: #2563eb; /* Blue background for active */
+            color: #ffffff; /* White text for active */
+            border-color: #2563eb; /* Blue border for active */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        /* Styles for hidden categories with display toggle */
+        .category-section-wrapper {
+            transition: opacity 0.5s ease-out;
+        }
+
+        .category-section-wrapper.hidden-display {
+            display: none; /* Hide element completely */
+        }
+        .category-section-wrapper.fade-out {
+            opacity: 0;
+        }
+        .category-section-wrapper.fade-in {
+            opacity: 1;
+        }
+
+        /* Contact section specific styles for better appearance */
+        .contact-info-card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: transform 0.3s ease-in-out;
+        }
+        .contact-info-card:hover {
+            transform: translateY(-5px);
+        }
+        .contact-icon {
+            color: #2563eb;
+            margin-bottom: 0.75rem;
+        }
+        .contact-link {
+            font-weight: 600;
+            color: #2563eb;
+            transition: color 0.3s ease;
+        }
+        .contact-link:hover {
+            color: #1e3a8a;
+            text-decoration: underline;
+        }
+
+        /* Policy and Terms specific styles */
+        .policy-section {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 4px 6px -1px rgba(0, 0, 0, 0.06);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+        .policy-section h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 1rem;
+        }
+        .policy-section p, .policy-section ul {
+            color: #4b5563;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        .policy-section ul {
+            list-style: disc;
+            margin-left: 1.5rem;
+        }
+        .policy-section strong {
+            color: #111827;
+        }
+
+        /* Hero Section with Background Images */
+        .hero-section-bg {
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('3bbea5da-92cc-45ec-8154-465da33bbf79.png') no-repeat center center;
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Mobile specific background image */
+        @media (max-width: 767px) {
+            .hero-section-bg {
+                background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('WhatsApp Image 2025-07-05 at 00.24.46_27188ddb.jpg') no-repeat center center;
+                background-size: cover;
+                background-position: center;
+            }
+        }
+
+        /* Hero Layout Revamp */
+        .hero-content-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem; /* Add some padding */
+            position: relative; /* For positioning the trailer image */
+        }
+
+        @media (min-width: 768px) {
+            .hero-content-wrapper {
+                flex-direction: row;
+                text-align: left;
+                justify-content: space-between;
+                padding: 0 4rem; /* Adjust padding for desktop */
+            }
+            .hero-text-content {
+                flex: 1;
+                max-width: 50%;
+                padding-right: 2rem;
+            }
+            .hero-image-content {
+                flex: 1;
+                display: flex;
+                justify-content: flex-end; /* Align to bottom right */
+                align-items: flex-end; /* Align to bottom right */
+                position: absolute; /* Position relative to .hero-content-wrapper */
+                bottom: 0;
+                right: 0;
+                width: 50%; /* Adjust width as needed */
+                height: 100%; /* Take full height for positioning */
+            }
+            #hero-trailer-img {
+                position: static; /* Remove absolute positioning for flex layout */
+                animation: none; /* Disable original driving animation */
+                max-width: 100%; /* Ensure it fits within its container */
+                height: auto;
+                object-fit: contain; /* Ensure the image is fully visible */
+                align-self: flex-end; /* Align image to the bottom of its container */
+            }
+        }
+
+        /* Unique Selling Points Styling */
+        .usp-badge {
+            display: inline-flex;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-weight: 500;
+            margin: 0.5rem;
+            backdrop-filter: blur(5px); /* Optional: subtle blur for glassmorphism effect */
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .usp-badge svg {
+            margin-right: 0.5rem;
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header class="bg-white shadow-md py-2 px-6 md:px-12 fixed w-full z-10 top-0 rounded-b-lg">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="https://ybetrailers.co.za" class="flex-shrink-0 transition transform duration-300 hover:scale-105">
+                <!-- Company Logo -->
+                <img src="6_24_2025_4_51_25_PM-removebg-preview (1).png" alt="YBE Trailers Logo" class="h-14 w-auto object-contain">
+            </a>
+            <nav class="hidden md:flex md:space-x-6 lg:space-x-8 flex-grow justify-end">
+                <a href="#home" class="text-gray-600 hover:text-blue-700 font-medium transition duration-300 whitespace-nowrap">Home</a>
+                <a href="#about" class="text-gray-600 hover:text-blue-700 font-medium transition duration-300 whitespace-nowrap">About Us</a>
+                <a href="#trailer-recommendation" class="text-gray-600 hover:text-blue-700 font-medium transition duration-300 whitespace-nowrap">AI Advisor</a>
+                <a href="#trailers" class="text-gray-600 hover:text-blue-700 font-medium transition duration-300 whitespace-nowrap">Our Trailers</a>
+                <a href="#how-it-works" class="text-gray-600 hover:text-blue-700 font-medium transition duration-300 whitespace-nowrap">How It Works</a>
+                <a href="#contact" class="text-gray-600 hover:text-blue-700 font-medium transition duration-300 whitespace-nowrap">Contact</a>
+            </nav>
+            <!-- Mobile Menu Button -->
+            <button id="mobile-menu-button" class="md:hidden text-gray-600 hover:text-blue-700 focus:outline-none flex-shrink-0">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+        </div>
+        <!-- Mobile Menu Overlay -->
+        <div id="mobile-menu" class="hidden md:hidden fixed inset-0 bg-white bg-opacity-95 z-20 flex flex-col items-center justify-center space-y-6">
+            <button id="close-mobile-menu" class="absolute top-4 right-6 text-gray-600 hover:text-blue-700 focus:outline-none">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+            <a href="#home" class="text-2xl text-gray-800 hover:text-blue-700 font-medium transition duration-300 py-2">Home</a>
+            <a href="#about" class="text-2xl text-gray-800 hover:text-blue-700 font-medium transition duration-300 py-2">AI Advisor</a>
+            <a href="#trailer-recommendation" class="text-2xl text-gray-800 hover:text-blue-700 font-medium transition duration-300 py-2">AI Advisor</a>
+            <a href="#trailers" class="text-2xl text-gray-800 hover:text-blue-700 font-medium transition duration-300 py-2">Our Trailers</a>
+            <a href="#how-it-works" class="text-2xl text-gray-800 hover:text-blue-700 font-medium transition duration-300 py-2">How It Works</a>
+            <a href="#contact" class="text-2xl text-gray-800 hover:text-blue-700 font-medium transition duration-300 py-2">Contact</a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="relative hero-section-bg text-white py-32 md:py-48 flex items-center justify-center rounded-b-xl shadow-lg mt-16 overflow-hidden">
+        <div class="relative z-10 container mx-auto hero-content-wrapper">
+            <div class="hero-text-content">
+                <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-6 animate-fade-in-up">
+                    Pulling together forward
+                </h1>
+                <p class="text-lg md:text-xl mb-10 max-w-2xl opacity-90 animate-fade-in-up delay-200">
+                    Rent strong, reliable trailers for all your transport needs — whether it's cars, livestock, or anything in between.
+                </p>
+                <a href="#trailers" class="inline-block bg-white text-blue-700 px-8 py-4 rounded-full text-lg font-semibold shadow-xl hover:bg-gray-100 hover:scale-105 transform transition duration-300 animate-fade-in-up delay-400">
+                    Explore Our Trailers
+                </a>
+                <!-- Unique Selling Points -->
+                <div class="mt-8 flex flex-wrap justify-center md:justify-start gap-2 animate-fade-in-up delay-600">
+                    <span class="usp-badge">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        Affordable Daily Rates
+                    </span>
+                    <span class="usp-badge">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        Heavy-Duty Designs
+                    </span>
+                    <span class="usp-badge">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        Backup Tyre Included
+                    </span>
+                </div>
+            </div>
+            <!-- Apply 'md:hidden' to hide on larger screens and keep visible by default on smaller screens -->
+            <div class="hero-image-content mt-8 md:mt-0 md:hidden">
+                <!-- Moving Trailer Image - now static in this layout -->
+                <img id="hero-trailer-img" src="WhatsApp_Image_2025-06-24_at_17.42.39_2d4e699c-removebg-preview.png" alt="Animated Trailer" class="max-w-xs md:max-w-sm lg:max-w-md">
+            </div>
+        </div>
+    </section>
+
+    <!-- About Us Section -->
+    <section id="about" class="py-16 md:py-24 bg-gray-50 px-6 rounded-xl mx-4 my-8 shadow-md">
+        <div class="container mx-auto text-center">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-8 animate-on-scroll-hidden">About Us</h2>
+            <p class="text-lg text-gray-700 max-w-3xl mx-auto leading-relaxed animate-on-scroll-hidden">
+                At YBE Trailers, we are committed to offering high-quality trailer rental services that match your specific needs. With a wide range of clean and well-serviced trailers, we make sure your rental is safe, reliable, and easy. Whether you are moving a car, transporting farm animals, or carrying goods, we have the right trailer for the job. Our goal is to make your rental experience smooth, simple, and worry-free.
+            </p>
+        </div>
+    </section>
+
+    <!-- New: Find Your Perfect Trailer Section (Gemini API Integration) -->
+    <section id="trailer-recommendation" class="py-16 md:py-24 px-6 rounded-xl mx-4 my-8 shadow-md bg-white">
+        <div class="container mx-auto text-center">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-12 animate-on-scroll-hidden flex items-center justify-center">
+                <span>✨ Find Your Perfect Trailer</span>
+            </h2>
+            <p class="text-lg text-gray-700 mb-8 max-w-2xl mx-auto animate-on-scroll-hidden">
+                Unsure which trailer fits your needs? Describe what you're hauling, and our AI assistant will recommend the best option!
+            </p>
+            <div class="max-w-xl mx-auto bg-gray-50 p-8 rounded-lg shadow-lg animate-on-scroll-hidden">
+                <textarea id="user-needs-input" rows="4" placeholder="e.g., 'moving a small car for repairs', 'transporting two cows to the market', 'hauling construction debris from a renovation project'"
+                    class="w-full px-5 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 mb-6"></textarea>
+                <button id="get-recommendation-btn"
+                    class="w-full bg-blue-600 text-white px-8 py-4 rounded-full text-lg font-semibold shadow-xl hover:bg-blue-700 transform hover:scale-105 transition duration-300 flex items-center justify-center space-x-2">
+                    <span id="button-text">✨ Get Recommendation</span>
+                    <div id="loading-spinner" class="loader hidden"></div>
+                </button>
+                <div id="recommendation-output" class="mt-8 p-4 bg-blue-50 text-blue-800 rounded-lg text-left hidden">
+                    <!-- AI recommendation will be displayed here -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Trailer Categories Section -->
+    <section id="trailers" class="py-16 md:py-24 px-6 rounded-xl mx-4 my-8 shadow-md bg-white">
+        <div class="container mx-auto text-center">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-12 animate-on-scroll-hidden">Our Diverse Trailer Fleet</h2>
+
+            <!-- Category Filter Buttons -->
+            <div class="flex flex-wrap justify-center gap-4 mb-12 animate-on-scroll-hidden" data-index="0">
+                <button class="category-button active" data-category="all">All Trailers</button>
+                <button class="category-button" data-category="car-trailers">Car Trailers</button>
+                <button class="category-button" data-category="cattle-trailers">Cattle Trailers</button>
+                <button class="category-button" data-category="goods-trailers">Goods Trailers</button>
+            </div>
+
+            <!-- All Trailer Categories Container -->
+            
+            <!-- Car Trailers Section -->
+            <div id="car-trailers-section" class="category-section-wrapper mb-16">
+                <h3 class="text-2xl md:text-3xl font-semibold text-blue-700 mb-8 animate-on-scroll-hidden">Car Trailers</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Double Axle Car Hauler (4t_car) -->
+                    <div class="bg-gray-100 rounded-lg shadow-lg p-6 flex flex-col items-center animate-on-scroll-hidden" data-index="0">
+                        <img src="2f387444-3a64-441a-aa30-d0bea3a1c699.png" alt="5m Double Axle Car Hauler" class="w-full h-48 object-cover rounded-md mb-4 shadow-sm">
+                        <h4 class="text-xl font-semibold text-gray-800 mb-2">5m Double Axle Car Hauler</h4>
+                        <p class="text-gray-600 text-center mb-4">Robust and reliable for heavier vehicles like SUVs and bakkies, ensuring enhanced stability.</p>
+                        <button class="view-details-btn bg-blue-600 text-white px-6 py-3 rounded-full hover:bg-blue-700 transform hover:scale-105 transition duration-300 shadow-md"
+                                data-trailer-type="5m Double Axle Car Hauler"
+                                data-trailer-id="4t_car"
+                                data-price="R900 per day"
+                                data-weight="Up to 2.5 tons (2500 kg / 5000 pounds)"
+                                data-tires="4"
+                                data-length="5m"
+                                data-deposit="No deposit required"
+                                data-spare-wheel="deposit R500 extra (optional hire)"
+                                data-liability="Customers are responsible for any damage caused by misuse, negligence, or improper handling. However, if the damage is due to poor maintenance or mechanical failure on our part, the responsibility remains with us."
+                                data-late-return="R50 per hour for late return"
+                                data-image="2f387444-3a64-441a-aa30-d0bea3a1c699.png">
+                            View Details
+                        </button>
+                    </div>
+                    <!-- Compact Car Trailer (2t_car) -->
+                    <div class="bg-gray-100 rounded-lg shadow-lg p-6 flex flex-col items-center animate-on-scroll-hidden" data-index="1">
+                        <img src="510f75b8-1228-4a9f-9aaf-ddca015e4e99.png" alt="4.5m Single Axle Trailer" class="w-full h-48 object-cover rounded-md mb-4 shadow-sm">
+                        <h4 class="text-xl font-semibold text-gray-800 mb-2">4.5m Single Axle Trailer</h4>
+                        <p class="text-gray-600 text-center mb-4">Lightweight and ideal for smaller cars, offering easy handling and efficient transport.</p>
+                        <button class="view-details-btn bg-blue-600 text-white px-6 py-3 rounded-full hover:bg-blue-700 transform hover:scale-105 transition duration-300 shadow-md"
+                                data-trailer-type="4.5m Single Axle Trailer"
+                                data-trailer-id="2t_car"
+                                data-price="R600 per day"
+                                data-weight="Up to 1.5 tons (1500 kg / 3307 pounds)"
+                                data-tires="2"
+                                data-length="3.5m"
+                                data-deposit="No deposit required"
+                                data-spare-wheel="deposit R500 extra (optional hire)"
+                                data-liability="Customers are responsible for any damage caused by misuse, negligence, or improper handling. However, if the damage is due to poor maintenance or mechanical failure on our part, the responsibility remains with us."
+                                data-late-return="R50 per hour for late return"
+                                data-image="510f75b8-1228-4a9f-9aaf-ddca015e4e99.png">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cattle Trailers Section -->
+            <div id="cattle-trailers-section" class="category-section-wrapper mb-16 category-section-hidden">
+                <h3 class="text-2xl md:text-3xl font-semibold text-blue-700 mb-8 animate-on-scroll-hidden">Cattle Trailers</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Small Livestock Trailer (3m_cattle) -->
+                    <div class="bg-gray-100 rounded-lg shadow-lg p-6 flex flex-col items-center animate-on-scroll-hidden" data-index="0">
+                        <div class="w-full h-48 flex justify-center items-center mb-4">
+                            <img src="b1dd4e5d-01ce-4cd2-8f38-bab2f3bb5d5f.png" alt="3m cattle Trailer" class="w-11/12 h-48 object-contain rounded-xl shadow-sm">
+                        </div>
+                        <h4 class="text-xl font-semibold text-gray-800 mb-2">3m cattle Trailer</h4>
+                        <p class="text-gray-600 text-center mb-4">Versatile cage trailer for small livestock, farm produce, tools, or garden waste.</p>
+                        <button class="view-details-btn bg-blue-600 text-white px-6 py-3 rounded-full hover:bg-blue-700 transform hover:scale-105 transition duration-300 shadow-md"
+                                data-trailer-type="3m cattle Trailer"
+                                data-trailer-id="3m_cattle"
+                                data-price="R700 per day"
+                                data-weight="Up to 2.5 ton (2500 kg / 5,000   pounds)"
+                                data-tires="4"
+                                data-length="3.0m"
+                                data-deposit="No deposit required"
+                                data-spare-wheel="deposit R500 extra (optional hire)"
+                                data-liability="Customers are responsible for any damage caused by misuse, negligence, or improper handling. However, if the damage is due to poor maintenance or mechanical failure on our part, the responsibility remains with us."
+                                data-late-return="R50 per hour for late return"
+                                data-image="b1dd4e5d-01ce-4cd2-8f38-bab2f3bb5d5f.png">
+                            View Details
+                        </button>
+                    </div>
+                    <!-- Standard Cattle Hauler (4m_cattle) -->
+                    <div class="bg-gray-100 rounded-lg shadow-lg p-6 flex flex-col items-center animate-on-scroll-hidden" data-index="1">
+                        <div class="w-full h-48 flex justify-center items-center mb-4">
+                            <img src="b1dd4e5d-01ce-4cd2-8f38-bab2f3bb5d5f.png" alt="4m cattle trailer" class="w-11/12 h-48 object-contain rounded-xl shadow-sm">
+                        </div>
+                        <h4 class="text-xl font-semibold text-gray-800 mb-2">4m cattle trailer </h4>
+                        <p class="text-gray-600 text-center mb-4">Robust livestock trailer for cattle, goats, or sheep, ensuring safe and comfortable transport.</p>
+                        <button class="view-details-btn bg-blue-600 text-white px-6 py-3 rounded-full hover:bg-blue-700 transform hover:scale-105 transition duration-300 shadow-md"
+                                data-trailer-type="4m cattle trailer"
+                                data-trailer-id="4m_cattle"
+                                data-price="R900 per day"
+                                data-weight="Up to 2.5 tons (2500 kg / 5,000  pounds)"
+                                data-tires="4"
+                                data-length="4.0m"
+                                data-deposit="No deposit required"
+                                data-spare-wheel="deposit R500 extra (optional hire)"
+                                data-liability="Customers are responsible for any damage caused by misuse, negligence, or improper handling. However, if the damage is due to poor maintenance or mechanical failure on our part, the responsibility remains with us."
+                                data-late-return="R50 per hour for late return"
+                                data-image="b1dd4e5d-01ce-4cd2-8f38-bab2f3bb5d5f.png">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Goods Trailers Section -->
+            <div id="goods-trailers-section" class="category-section-wrapper category-section-hidden">
+                <h3 class="text-2xl md:text-3xl font-semibold text-blue-700 mb-8 animate-on-scroll-hidden">Goods Trailers</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Medium Goods Trailer (3m_lag) -->
+                    <div class="bg-gray-100 rounded-lg shadow-lg p-6 flex flex-col items-center animate-on-scroll-hidden" data-index="0">
+                        <img src="WhatsApp Image 2025-06-25 at 16.26.30_3f85eec9.jpg" alt="3 meter Trailer" class="w-full h-48 object-cover rounded-md mb-4 shadow-sm">
+                        <h4 class="text-xl font-semibold text-gray-800 mb-2">3 meter Trailer</h4>
+                        <p class="text-gray-600 text-center mb-4">Versatile for medium goods, refuse, and light equipment, including small livestock.</p>
+                        <button class="view-details-btn bg-blue-600 text-white px-6 py-3 rounded-full hover:bg-blue-700 transform hover:scale-105 transition duration-300 shadow-md"
+                                data-trailer-type="3 meter Trailer"
+                                data-trailer-id="3m_lag"
+                                data-price="R500 per day"
+                                data-weight="Up to 1.5 tons (1500 kg / 3000 pounds)"
+                                data-tires="2"
+                                data-length="3m"
+                                data-deposit="No deposit required"
+                                data-spare-wheel="deposit R500 extra (optional hire)"
+                                data-liability="Customers are responsible for any damage caused by misuse, negligence, or improper handling. However, if the damage is due to poor maintenance or mechanical failure on our part, the responsibility remains with us."
+                                data-late-return="R50 per hour for late return"
+                                data-image="WhatsApp Image 2025-06-25 at 16.26.30_3f85eec9.jpg">
+                            View Details
+                        </button>
+                    </div>
+                    <!-- Utility Box Trailer (4m_lag) -->
+                    <div class="bg-gray-100 rounded-lg shadow-lg p-6 flex flex-col items-center animate-on-scroll-hidden" data-index="1">
+                        <img src="1e3e0c94-77ce-46fd-929d-94ae37c6de63.png" alt="4 meter trailer" class="w-full h-48 object-cover rounded-md mb-4 shadow-sm">
+                        <h4 class="text-xl font-semibold text-gray-800 mb-2">4 meter trailer </h4>
+                        <p class="text-gray-600 text-center mb-4">Heavy-duty trailer for medium livestock, building materials, and large garden waste.</p>
+                        <button class="view-details-btn bg-blue-600 text-white px-6 py-3 rounded-full hover:bg-blue-700 transform hover:scale-105 transition duration-300 shadow-md"
+                                data-trailer-type="4 meter trailer"
+                                data-trailer-id="4m_lag"
+                                data-price="R650 per day"
+                                data-weight="Up to 2.5 tons (2500 kg / 5,000 pounds)"
+                                data-tires="2"
+                                data-length="2.5m"
+                                data-deposit="No deposit required"
+                                data-spare-wheel="deposit R500 extra (optional hire)"
+                                data-liability="Customers are responsible for any damage caused by misuse, negligence, or improper handling. However, if the damage is due to poor maintenance or mechanical failure on our part, the responsibility remains with us."
+                                data-late-return="R50 per hour for late return"
+                                data-image="1e3e0c94-77ce-46fd-929d-94ae37c6de63.png">
+                            View Details
+                        </button>
+                    </div>
+                    <!-- Enclosed Cargo Trailer (2m_lag) -->
+                    <div class="bg-gray-100 rounded-lg shadow-lg p-6 flex flex-col items-center animate-on-scroll-hidden" data-index="2">
+                        <img src="WhatsApp Image 2025-07-04 at 12.55.45_f160faa6.jpg" alt="2m Trailer" class="w-full h-48 object-cover rounded-md mb-4 shadow-sm">
+                        <h4 class="text-xl font-semibold text-gray-800 mb-2">2m Trailer</h4>
+                        <p class="text-gray-600 text-center mb-4">Compact and practical for light hauling: tools, small equipment, and household items.</p>
+                        <button class="view-details-btn bg-blue-600 text-white px-6 py-3 rounded-full hover:bg-blue-700 transform hover:scale-105 transition duration-300 shadow-md"
+                                data-trailer-type="2m Trailer"
+                                data-trailer-id="2m_lag"
+                                data-price="R400 per day"
+                                data-weight="Up to 0.75 (750 kg / 1500 pounds)"
+                                data-tires="2"
+                                data-length="2m"
+                                data-deposit="No deposit required"
+                                data-spare-wheel="deposit R500 extra (optional hire)"
+                                data-liability="Customers are responsible for any damage caused by misuse, negligence, or improper handling. However, if the damage is due to poor maintenance or mechanical failure on our part, the responsibility remains with us."
+                                data-late-return="R50 per hour for late return"
+                                data-image="WhatsApp Image 2025-07-04 at 12.55.45_f160faa6.jpg">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="py-16 md:py-24 bg-gray-50 px-6 rounded-xl mx-4 my-8 shadow-md">
+        <div class="container mx-auto text-center">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-12 animate-on-scroll-hidden">How It Works</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="flex flex-col items-center p-6 bg-white rounded-lg shadow-lg border-t-4 border-blue-500 animate-on-scroll-hidden" data-index="0">
+                    <div class="bg-blue-100 p-4 rounded-full mb-4">
+                        <svg class="w-12 h-12 text-blue-600" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">1. Choose Your Trailer</h3>
+                    <p class="text-gray-600">Browse our extensive fleet and select the perfect trailer for your needs.</p>
+                </div>
+                <div class="flex flex-col items-center p-6 bg-white rounded-lg shadow-lg border-t-4 border-blue-500 animate-on-scroll-hidden" data-index="1">
+                    <div class="bg-blue-100 p-4 rounded-full mb-4">
+                        <svg class="w-12 h-12 text-blue-600" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M19 4h-3V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11zM7 11h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">2. Book & Pay Online</h3>
+                    <p class="text-gray-600">Secure your desired trailer with our easy online booking and payment system.</p>
+                </div>
+                <div class="flex flex-col items-center p-6 bg-white rounded-lg shadow-lg border-t-4 border-blue-500 animate-on-scroll-hidden" data-index="2">
+                    <div class="bg-blue-100 p-4 rounded-full mb-4">
+                        <svg class="w-12 h-12 text-blue-600" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1s3.1 1.39 3.1 3.1v2z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">3. Pick Up & Go!</h3>
+                    <p class="text-gray-600">Collect your trailer at our branch and confidently complete your task.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-16 md:py-24 px-6 rounded-xl mx-4 my-8 shadow-md bg-white">
+        <div class="container mx-auto text-center">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-12 animate-on-scroll-hidden">Contact Us & Get Directions</h2>
+            <div class="max-w-xl mx-auto bg-gray-50 p-8 rounded-lg shadow-lg animate-on-scroll-hidden">
+                <p class="text-lg text-gray-700 mb-6">
+                    Reach out to us for bookings or inquiries, or get directions to our nearest branch!
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="contact-info-card animate-on-scroll-hidden" data-index="0">
+                        <svg class="w-12 h-12 contact-icon" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+                        </svg>
+                        <p class="text-lg font-semibold text-gray-800 mb-2">Call Us</p>
+                        <a href="tel:+27734057812" class="contact-link text-xl">+27 73 405 7812</a>
+                    </div>
+                    <div class="contact-info-card animate-on-scroll-hidden" data-index="1">
+                        <svg class="w-12 h-12 contact-icon" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M.057 24L1.649 18.67C.934 17.554 0.547 16.284 0.547 14.948c0-8.032 6.536-14.568 14.568-14.568 3.807 0 7.318 1.493 9.998 3.937L24 4.36l-2.003 5.437-4.992-1.834c-1.125-.415-2.36-.63-3.61-.63-6.686 0-12.122 5.436-12.122 12.122 0 1.25.215 2.485.63 3.61l-1.834 4.992L.057 24zM14.948 1.98c7.147 0 12.96 5.813 12.96 12.96S22.095 27.9 14.948 27.9 2 22.087 2 14.948 7.813 1.98 14.948 1.98z" style="fill: currentColor; transform: scale(0.8); transform-origin: center;"/>
+                        </svg>
+                        <p class="text-lg font-semibold text-gray-800 mb-2">WhatsApp Us</p>
+                        <a href="https://wa.me/27734057812" target="_blank" class="contact-link text-xl">+27 73 405 7812</a>
+                    </div>
+                    <div class="contact-info-card md:col-span-2 animate-on-scroll-hidden" data-index="2">
+                        <svg class="w-12 h-12 contact-icon" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                        </svg>
+                        <p class="text-lg font-semibold text-gray-800 mb-2">Email Us</p>
+                        <a href="mailto:mahomane@gmail.com" class="contact-link text-xl">mahomane@gmail.com</a>
+                    </div>
+                </div>
+
+                <!-- Email Contact Form -->
+                <div class="mt-8">
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-4">Send Us an Email</h3>
+                    <form id="email-contact-form" class="space-y-4 text-left">
+                        <div>
+                            <label for="contact-name" class="block text-gray-700 text-sm font-bold mb-2">Your Name</label>
+                            <input type="text" id="contact-name" name="name"
+                                class="shadow appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
+                                placeholder="John Doe" required>
+                        </div>
+                        <div>
+                            <label for="contact-email" class="block text-gray-700 text-sm font-bold mb-2">Your Email</label>
+                            <input type="email" id="contact-email" name="email"
+                                class="shadow appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
+                                placeholder="john.doe@example.com" required>
+                        </div>
+                        <div>
+                            <label for="contact-subject" class="block text-gray-700 text-sm font-bold mb-2">Subject</label>
+                            <input type="text" id="contact-subject" name="subject"
+                                class="shadow appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
+                                placeholder="Inquiry about trailer rental" required>
+                        </div>
+                        <div>
+                            <label for="contact-message" class="block text-gray-700 text-sm font-bold mb-2">Your Message</label>
+                            <textarea id="contact-message" name="message" rows="5"
+                                class="shadow appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
+                                placeholder="Type your message here..." required></textarea>
+                        </div>
+                        <button type="submit" id="send-email-btn"
+                            class="w-full bg-blue-600 text-white px-8 py-4 rounded-full text-lg font-semibold shadow-xl hover:bg-blue-700 transform hover:scale-105 transition duration-300 flex items-center justify-center space-x-2">
+                            Send Email
+                        </button>
+                    </form>
+                </div>
+
+                <div class="mt-8">
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-4">Find Our Branches</h3>
+                    <p class="text-gray-700 mb-6">We have two convenient branches in Limpopo:</p>
+                    <div class="flex flex-col md:flex-row justify-center gap-4 mb-6">
+                        <div class="bg-white p-4 rounded-lg shadow-md flex-1 text-center">
+                            <p class="font-semibold text-gray-800">Venda Branch</p>
+                            <p class="text-gray-600 text-sm">22°58'09.5"S 30°29'58.0"E</p>
+                            <a href="https://www.google.com/maps/dir/?api=1&destination=-22.969305,30.499444&travelmode=driving" target="_blank" class="inline-block mt-2 text-blue-600 hover:underline text-sm">Get Directions</a>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow-md flex-1 text-center">
+                            <p class="font-semibold text-gray-800">Malamulele Madonsi Branch</p>
+                            <p class="text-gray-600 text-sm">23°00'57.9"S 30°42'55.7"E</p>
+                            <a href="https://www.google.com/maps/dir/?api=1&destination=-23.016083,30.715472&travelmode=driving" target="_blank" class="inline-block mt-2 text-blue-600 hover:underline text-sm">Get Directions</a>
+                        </div>
+                    </div>
+
+                    <button id="get-directions-btn"
+                        class="w-full bg-blue-600 text-white px-8 py-4 rounded-full text-lg font-semibold shadow-xl hover:bg-blue-700 transform hover:scale-105 transition duration-300 flex items-center justify-center space-x-2">
+                        <span id="directions-button-text">Get Directions to Nearest Branch</span>
+                        <div id="directions-loading-spinner" class="loader hidden"></div>
+                    </button>
+                    <div id="directions-output" class="mt-4 p-4 bg-blue-50 text-blue-800 rounded-lg text-left hidden">
+                        <!-- Nearest branch directions will be displayed here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer class="bg-gray-800 text-white py-8 text-center rounded-t-xl mt-8">
+        <div class="container mx-auto px-4">
+            <p>&copy; 2025 YBE Trailers. All rights reserved.</p>
+            <div class="flex justify-center space-x-6 mt-4 items-center">
+                <a href="#privacy-policy-modal" class="hover:text-blue-400 transition duration-300 privacy-policy-link">Privacy Policy</a>
+                <a href="#terms-of-service-modal" class="hover:text-blue-400 transition duration-300 terms-of-service-link">Terms of Service</a>
+                <a href="https://www.tiktok.com/@ybetrailers?is_from_webapp=1&sender_device=pc" target="_blank" class="block ml-4 transition transform duration-300 hover:scale-110">
+                    <img src="bf4aee07-b2eb-4252-9158-dcb502a74631-removebg-preview.png" alt="TikTok" class="h-8 w-auto">
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Trailer Details Modal Structure -->
+    <div id="trailer-details-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <button id="close-modal-btn" class="absolute top-4 right-6 text-gray-600 hover:text-gray-900 text-2xl font-bold leading-none focus:outline-none">
+                &times;
+            </button>
+            <h3 id="modal-trailer-type" class="text-2xl font-bold text-gray-900 mb-4"></h3>
+            <img id="modal-trailer-image" src="" alt="Trailer Image" class="w-full h-48 object-cover rounded-md mb-4 shadow-sm">
+            <div class="space-y-2 text-left text-gray-700">
+                <p><strong>Price:</strong> <span id="modal-price"></span></p>
+                <p><strong>Weight Capacity:</strong> <span id="modal-weight"></span></p>
+                <p><strong>Tires:</strong> <span id="modal-tires"></span></p>
+                <p><strong>Length:</strong> <span id="modal-length"></span></p>
+                <p><strong>Deposit:</strong> <span id="modal-deposit"></span></p>
+                <p><strong>Spare Wheel:</strong> <span id="modal-spare-wheel"></span></p>
+                <p><strong>Liability:</strong> <span id="modal-liability"></span></p>
+                <p><strong>Late Return Charge:</strong> <span id="modal-late-return"></span></p>
+            </div>
+            <button id="book-now-modal-btn" class="mt-6 bg-blue-600 text-white px-6 py-3 rounded-full hover:bg-blue-700 transform hover:scale-105 transition duration-300 shadow-md">
+                Book Now & Pay
+            </button>
+        </div>
+    </div>
+
+    <!-- Privacy Policy Modal -->
+    <div id="privacy-policy-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <button id="close-privacy-policy-modal-btn" class="absolute top-4 right-6 text-gray-600 hover:text-gray-900 text-2xl font-bold leading-none focus:outline-none">
+                &times;
+            </button>
+            <h2 class="text-3xl font-bold text-gray-900 mb-6 text-center">Privacy Policy</h2>
+            <div class="policy-section">
+                <p class="text-gray-700 mb-4">At YBE Trailers, we respect your privacy and are committed to protecting your personal information.</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">1. Information Collection</h3>
+                <p>We collect personal data when you use our online booking system or visit our physical branch. This includes your name, contact number, email address, ID, payment details, and selected trailer information. This data is essential for processing your booking and rental agreement.</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">2. Website Usage</h3>
+                <p>This website collects anonymous usage data (such as page visits and interactions) to improve the website experience and our services. This data does not identify you personally.</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">3. Data Usage</h3>
+                <p>Your personal information is used solely for the purpose of processing your trailer rental bookings, managing your account, communicating with you about your rentals, and for internal record-keeping. We may also use your email to send booking confirmations and updates.</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">4. Data Sharing</h3>
+                <p>We do not sell, trade, or otherwise transfer your personal information to outside parties except for trusted third parties who assist us in operating our website, conducting our business, or servicing you, so long as those parties agree to keep this information confidential. This may include payment processors (like Yoco) for online transactions. We may also release your information when we believe release is appropriate to comply with the law, enforce our site policies, or protect ours or others' rights, property, or safety.</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">5. Security</h3>
+                <p>We implement a variety of security measures to maintain the safety of your personal information when you place an order or enter, submit, or access your personal information. All supplied sensitive/credit information is transmitted via Secure Socket Layer (SSL) technology and then encrypted into our Payment gateway providers' database only to be accessible by those authorized with special access rights to such systems, and are required to keep the information confidential.</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">6. Online Payments</h3>
+                <p>For online payments, we use secure third-party payment gateways (e.g., Yoco). We do not store your full credit card details on our servers. All payment transactions are processed directly by the payment gateway, which adheres to strict security standards.</p>
+
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">7. Your Consent</h3>
+                <p>By using our site, you consent to our website's privacy policy.</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">8. Contact Us</h3>
+                <p>If you have any questions regarding this privacy policy, you may contact us using the information below:</p>
+                <ul class="list-none pl-0 space-y-1">
+                    <li><strong class="text-blue-700">🌐 ybetrailers.co.za</strong></li>
+                    <li><strong class="text-blue-700">📞 +27 73 405 7812</strong></li>
+                    <li><strong class="text-blue-700">📧 mahomane@gmail.com</strong></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Terms of Service Modal -->
+    <div id="terms-of-service-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <button id="close-terms-of-service-modal-btn" class="absolute top-4 right-6 text-gray-600 hover:text-gray-900 text-2xl font-bold leading-none focus:outline-none">
+                &times;
+            </button>
+            <h2 class="text-3xl font-bold text-gray-900 mb-6 text-center">Terms of Service</h2>
+            <div class="policy-section">
+                <p class="text-gray-700 mb-4"><strong>Effective Date:</strong> 7/5/2025</p>
+                <p class="text-gray-700 mb-4">By accessing or using the YBE Trailers website (ybetrailers.co.za) and its services, you agree to be bound by these Terms of Service. Please read them carefully.</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">1. Online Bookings and Payments</h3>
+                <ul class="list-disc pl-5 mb-4">
+                    <li>Trailer bookings can be made online via our website or in person at our branch.</li>
+                    <li>All online bookings require full payment via our secure payment gateway (Yoco) to confirm the reservation.</li>
+                    <li>All rentals are subject to availability and successful payment processing.</li>
+                    <li>Upon successful booking and payment, you will receive a confirmation email with your rental details.</li>
+                </ul>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">2. Rental Conditions</h3>
+                <ul class="list-disc pl-5 mb-4">
+                    <li>To complete the rental agreement, customers must provide valid identification and contact details at the time of pickup.</li>
+                    <li>Trailers must be used safely, legally, and in accordance with all applicable traffic laws and regulations.</li>
+                    <li>The renter is fully responsible for any damage, theft, or loss of the trailer during the rental period, regardless of fault.</li>
+                    <li>Trailers must not exceed their specified weight limit. Overloading will result in penalties and potential legal action.</li>
+                </ul>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">3. Cancellations and Refunds</h3>
+                <ul class="list-disc pl-5 mb-4">
+                    <li>Cancellations made 24 hours or more before the scheduled pickup time may be eligible for a full refund.</li>
+                    <li>Cancellations made less than 24 hours before pickup may incur a cancellation fee.</li>
+                    <li>No refunds will be issued for no-shows or early returns.</li>
+                </ul>
+
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">4. Returns and Penalties</h3>
+                <ul class="list-disc pl-5 mb-4">
+                    <li>Trailers must be returned on the agreed date and time to the designated branch.</li>
+                    <li>Late returns will incur an hourly penalty fee of R50 per hour.</li>
+                    <li>If a trailer is returned excessively dirty or damaged beyond normal wear and tear, cleaning or repair fees will be assessed and charged to the renter.</li>
+                </ul>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">5. Liability Disclaimer</h3>
+                <ul class="list-disc pl-5 mb-4">
+                    <li>YBE Trailers is not responsible for any accidents, injuries, property damage, or loss of goods that occur during the use of our trailers.</li>
+                    <li>Renters assume all risks associated with towing and using the rented trailer and must ensure they comply with all road laws and safety rules.</li>
+                </ul>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">6. Website and Communication</h3>
+                <ul class="list-disc pl-5 mb-4">
+                    <li>Our website (ybetrailers.co.za) provides general information, including trailer types, specifications, and pricing.</li>
+                    <li>Booking confirmations, updates, and important notices will be sent via email to the address provided during booking.</li>
+                    <li>Prices, trailer availability, and terms are subject to change without prior notice.</li>
+                </ul>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">7. Contact Information</h3>
+                <p>For any questions, support, or assistance, please contact:</p>
+                <p class="font-semibold text-gray-800">YBE Trailers</p>
+                <ul class="list-none pl-0 space-y-1">
+                    <li>🌐 <a href="https://ybetrailers.co.za" target="_blank" class="text-blue-600 hover:underline">ybetrailers.co.za</a></li>
+                    <li>📞 <a href="tel:+27734057812" class="text-blue-600 hover:underline">+27 73 405 7812</a></li>
+                    <li>📧 <a href="mailto:mahomane@gmail.com" class="text-blue-600 hover:underline">mahomane@gmail.com</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript for Mobile Menu and Scroll Animations -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- Mobile Menu Logic ---
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const closeMobileMenuButton = document.getElementById('close-mobile-menu');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const navLinks = mobileMenu.querySelectorAll('a');
+
+            // Robust checks for elements before adding event listeners
+            if (mobileMenuButton) {
+                mobileMenuButton.addEventListener('click', function() {
+                    if (mobileMenu) {
+                        mobileMenu.classList.remove('hidden');
+                        mobileMenu.classList.add('active'); // Use 'active' class for transitions
+                    }
+                    document.body.style.overflow = 'hidden'; // Prevent scrolling when menu is open
+                });
+            } else {
+                console.warn("Mobile menu button not found.");
+            }
+
+            if (closeMobileMenuButton) {
+                closeMobileMenuButton.addEventListener('click', function() {
+                    if (mobileMenu) {
+                        mobileMenu.classList.remove('active');
+                        // Add 'hidden' after transition completes for proper display: none
+                        setTimeout(() => mobileMenu.classList.add('hidden'), 300); // Matches transition duration
+                    }
+                    document.body.style.overflow = ''; // Restore scrolling
+                });
+            } else {
+                console.warn("Close mobile menu button not found.");
+            }
+            
+            // Close mobile menu when a link is clicked
+            if (navLinks.length > 0) {
+                navLinks.forEach(link => {
+                    link.addEventListener('click', function() {
+                        if (mobileMenu) {
+                            mobileMenu.classList.remove('active');
+                            setTimeout(() => mobileMenu.classList.add('hidden'), 300); // Matches transition duration
+                        }
+                        document.body.style.overflow = '';
+                    });
+                });
+            } else {
+                console.warn("Mobile navigation links not found.");
+            }
+            
+
+            // --- Smooth Scrolling Logic with Animation Reset ---
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    const targetId = this.getAttribute('href');
+                    
+                    // Handle href="#" specifically to avoid querySelector error and just scroll to top
+                    if (targetId === '#') {
+                        e.preventDefault();
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                        return; 
+                    }
+
+                    const targetElement = document.querySelector(targetId);
+
+                    if (targetElement) {
+                        e.preventDefault(); // Prevent default jump for valid IDs
+
+                        // Find all animatable elements within the target section and reset their state
+                        const elementsToReset = targetElement.querySelectorAll('.animate-on-scroll-visible');
+                        elementsToReset.forEach(el => {
+                            el.classList.remove('animate-on-scroll-visible');
+                            el.classList.add('animate-on-scroll-hidden');
+                            // Force reflow to ensure animation resets
+                            void el.offsetWidth; 
+                        });
+
+                        // Now perform the smooth scroll
+                        const headerOffset = document.querySelector('header').offsetHeight;
+                        const elementPosition = targetElement.getBoundingClientRect().top + window.scrollY;
+                        const offsetPosition = elementPosition - headerOffset - 20; // Added 20px padding
+
+                        window.scrollTo({
+                            top: offsetPosition,
+                            behavior: "smooth"
+                        });
+
+                        // The IntersectionObserver will now correctly re-trigger animations as it scrolls into view
+                    }
+                });
+            });
+
+            // --- Scroll Animation Logic for content sections (including reset) ---
+            const animateElements = document.querySelectorAll('.animate-on-scroll-hidden');
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const element = entry.target;
+                        // Apply stagger delay if data-index exists
+                        if (element.dataset.index) {
+                            element.style.setProperty('--delay', `${parseInt(element.dataset.index) * 0.15}s`);
+                        }
+                        element.classList.remove('animate-on-scroll-hidden');
+                        element.classList.add('animate-on-scroll-visible');
+                    } else {
+                        // When element leaves viewport, reset its animation state
+                        const element = entry.target;
+                        element.classList.remove('animate-on-scroll-visible');
+                        element.classList.add('animate-on-scroll-hidden');
+                        // Force reflow to ensure animation resets correctly when re-entering viewport
+                        void element.offsetWidth; 
+                    }
+                });
+            }, {
+                rootMargin: '0px',
+                threshold: 0.1 // Trigger when 10% of the element is visible
+            });
+
+            animateElements.forEach(element => {
+                observer.observe(element);
+            });
+
+            // --- Trailer Details Modal Logic ---
+            const viewDetailsButtons = document.querySelectorAll('.view-details-btn');
+            const trailerDetailsModal = document.getElementById('trailer-details-modal');
+            const closeModalBtn = document.getElementById('close-modal-btn');
+            const bookNowModalBtn = document.getElementById('book-now-modal-btn'); 
+            
+            const modalTrailerType = document.getElementById('modal-trailer-type');
+            const modalPrice = document.getElementById('modal-price');
+            const modalWeight = document.getElementById('modal-weight');
+            const modalTires = document.getElementById('modal-tires');
+            const modalLength = document.getElementById('modal-length');
+            const modalDeposit = document.getElementById('modal-deposit');
+            const modalSpareWheel = document.getElementById('modal-spare-wheel');
+            const modalLiability = document.getElementById('modal-liability');
+            const modalLateReturn = document.getElementById('modal-late-return');
+            const modalTrailerImage = document.getElementById('modal-trailer-image'); 
+
+            viewDetailsButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Populate modal with data from data-attributes
+                    modalTrailerType.textContent = this.dataset.trailerType;
+                    modalPrice.textContent = this.dataset.price;
+                    modalWeight.textContent = this.dataset.weight;
+                    modalTires.textContent = this.dataset.tires;
+                    modalLength.textContent = this.dataset.length;
+                    modalDeposit.textContent = this.dataset.deposit;
+                    modalSpareWheel.textContent = this.dataset.spareWheel;
+                    modalLiability.textContent = this.dataset.liability;
+                    modalLateReturn.textContent = this.dataset.lateReturn;
+                    modalTrailerImage.src = this.dataset.image; 
+                    modalTrailerImage.alt = this.dataset.trailerType; 
+                    
+                    // Store the trailer ID and type on the Book Now button for later use
+                    bookNowModalBtn.dataset.trailerId = this.dataset.trailerId;
+                    bookNowModalBtn.dataset.trailerType = this.dataset.trailerType;
+
+                    // Show the modal
+                    trailerDetailsModal.classList.remove('hidden');
+                    trailerDetailsModal.classList.add('active');
+                    document.body.style.overflow = 'hidden'; 
+                });
+            });
+
+            // Close modal functions
+            if (closeModalBtn) {
+                closeModalBtn.addEventListener('click', () => {
+                    trailerDetailsModal.classList.remove('active');
+                    setTimeout(() => trailerDetailsModal.classList.add('hidden'), 300); 
+                    document.body.style.overflow = '';
+                });
+            }
+
+            if (trailerDetailsModal) {
+                trailerDetailsModal.addEventListener('click', (e) => {
+                    // Close if click is on the overlay itself, not the content
+                    if (e.target === trailerDetailsModal) {
+                        trailerDetailsModal.classList.remove('active');
+                        setTimeout(() => trailerDetailsModal.classList.add('hidden'), 300); 
+                        document.body.style.overflow = '';
+                    }
+                });
+            }
+
+            // Book Now & Pay button inside modal logic - Updated to redirect to Yoco with trailer info
+            if (bookNowModalBtn) {
+                bookNowModalBtn.addEventListener('click', () => {
+                    const trailerId = bookNowModalBtn.dataset.trailerId;
+                    const trailerType = bookNowModalBtn.dataset.trailerType;
+                    const yocoBaseUrl = "https://pay.yoco.com/ybe-trailers";
+                    
+                    // Construct the Yoco payment URL with metadata
+                    // Note: This passes the trailer ID as a query parameter. 
+                    // Yoco's dashboard might not automatically parse this into a specific field,
+                    // but it will be visible in the transaction details URL.
+                    const yocoPaymentUrl = `${yocoBaseUrl}?metadata[trailer_id]=${encodeURIComponent(trailerId)}&metadata[trailer_type]=${encodeURIComponent(trailerType)}`;
+                    
+                    window.location.href = yocoPaymentUrl;
+
+                    // Close the modal after action
+                    trailerDetailsModal.classList.remove('active');
+                    setTimeout(() => trailerDetailsModal.classList.add('hidden'), 300);
+                    document.body.style.overflow = '';
+                });
+            } else {
+                console.warn("Book Now & Pay button in modal not found.");
+            }
+
+            // --- Category Filtering Logic ---
+            const categoryButtons = document.querySelectorAll('.category-button');
+            const carTrailersSection = document.getElementById('car-trailers-section');
+            const cattleTrailersSection = document.getElementById('cattle-trailers-section');
+            const goodsTrailersSection = document.getElementById('goods-trailers-section');
+            // Store all section elements in an array for easy iteration
+            const allCategorySections = [
+                carTrailersSection,
+                cattleTrailersSection,
+                goodsTrailersSection
+            ].filter(Boolean); // Filter out any nulls if an ID is missing
+
+            function showCategory(category) {
+                allCategorySections.forEach(section => {
+                    section.classList.add('fade-out'); // Start fade out
+                    section.classList.remove('fade-in'); // Ensure fade-in is removed
+
+                    // After fade-out, hide it completely
+                    setTimeout(() => {
+                        section.classList.add('hidden-display');
+                        // Reset animation state for elements inside when hidden
+                        section.querySelectorAll('.animate-on-scroll-visible').forEach(el => {
+                            el.classList.remove('animate-on-scroll-visible');
+                            el.classList.add('animate-on-scroll-hidden');
+                            void el.offsetWidth; // Force reflow
+                        });
+                    }, 500); // Matches CSS transition duration
+                });
+
+                // Show selected category
+                setTimeout(() => {
+                    let targetSection = null;
+                    if (category === 'all') {
+                        allCategorySections.forEach(section => {
+                            section.classList.remove('hidden-display');
+                            section.classList.add('fade-in');
+                            // Elements inside will be observed by IntersectionObserver and animate
+                        });
+                    } else {
+                        targetSection = document.getElementById(`${category}-section`);
+                        if (targetSection) {
+                            targetSection.classList.remove('hidden-display');
+                            targetSection.classList.add('fade-in');
+                            // Elements inside will be observed by IntersectionObserver and animate
+                        }
+                    }
+                    // Scroll to the selected category section if not 'all' and it's above current viewport
+                    if (targetSection && targetSection.getBoundingClientRect().top < 0) {
+                        window.scrollTo({
+                            top: targetSection.offsetTop - document.querySelector('header').offsetHeight - 20,
+                            behavior: "smooth"
+                        });
+                    }
+                }, 500); // Delay showing until others are fully hidden
+
+                // Update active button state
+                categoryButtons.forEach(btn => btn.classList.remove('active'));
+                const activeBtn = document.querySelector(`.category-button[data-category="${category}"]`);
+                if (activeBtn) activeBtn.classList.add('active');
+            }
+
+            categoryButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const category = this.dataset.category;
+                    showCategory(category);
+                });
+            });
+
+            // Initial display: Default to "All Trailers"
+            showCategory('all');
+
+            // --- Gemini API Integration Logic ---
+            const userNeedsInput = document.getElementById('user-needs-input');
+            const getRecommendationBtn = document.getElementById('get-recommendation-btn');
+            const recommendationOutput = document.getElementById('recommendation-output');
+            const loadingSpinner = document.getElementById('loading-spinner');
+            const buttonText = document.getElementById('button-text');
+            // The AI recommendation link will be dynamically created, so it's not selected here statically.
+
+            if (getRecommendationBtn && userNeedsInput && recommendationOutput && loadingSpinner && buttonText) { // Ensure core elements exist
+                getRecommendationBtn.addEventListener('click', async () => {
+                    const prompt = userNeedsInput.value.trim();
+
+                    if (!prompt) {
+                        recommendationOutput.innerHTML = '<p class="text-red-500">Please describe what you need to haul.</p>';
+                        recommendationOutput.classList.remove('hidden');
+                        return;
+                    }
+
+                    // Show loading state
+                    buttonText.textContent = 'Getting Recommendation...';
+                    loadingSpinner.classList.remove('hidden');
+                    getRecommendationBtn.disabled = true;
+                    recommendationOutput.classList.add('hidden'); // Hide previous output
+
+
+                    try {
+                        let chatHistory = [];
+                        // Craft the prompt for the LLM
+                        const llmPrompt = `You are a highly knowledgeable and professional trailer rental expert from YBE Trailers. Your company offers three main types of trailers:
+                        - **Car Trailers:** For transporting vehicles. We have various sizes, including options for heavy-duty vehicles like SUVs and trucks. Specific models and their IDs and detailed descriptions are:
+                            - "5m Double Axle Car Hauler (ID: 4t_car): This 5-meter car trailer, priced at R900 per day, is purpose-built for safe and reliable vehicle transport. With a robust 2.5-ton (2500 kg) load capacity and a twin-axle (4-wheel) setup, it's designed to handle everything from passenger cars and bakkies to SUVs, non-running vehicles, or even small commercial vans. The heavy-duty steel frame, low bed height, and integrated ramps make loading and unloading vehicles quick and efficient — whether it's for breakdown recovery, dealership delivery, or personal use. This trailer is ideal for: Towing broken down or accident-damaged vehicles, Moving cars between provinces, Vehicle delivery for dealerships or auctions, Track day or motorsport transport, Shifting project cars or collector vehicles. It’s not suitable for general cargo, construction materials, livestock, or loose goods, as it's specifically engineered for carrying wheeled vehicles with proper anchoring points for tie-downs."
+                            - "4.5m Single Axle Trailer (ID: 2t_car): This 4.5-meter car trailer, priced at R800 per day, is designed for safely transporting vehicles up to 1.5 tons (1500 kg / 3307 lbs). With its single-axle configuration and strong steel frame, it offers both durability and easy handling, making it perfect for individual car transport, breakdown recovery, or vehicle delivery services. Ideal for: Towing sedans, compact SUVs, or light commercial vehicles, Transporting non-running cars from auctions or repair shops, Moving project cars or vehicles to shows, races, or workshops. The open flatbed design makes loading and unloading hassle-free, while the built-in railings ensure secure tie-down points to keep the vehicle stable during transport. This trailer is also suitable for customers needing a flexible solution for both long-distance hauls and local moves. Whether you're in the automotive industry or a private individual needing to move a vehicle, this trailer offers a reliable, affordable, and roadworthy option that gets the job done safely and efficiently."
+                        - **Cattle Trailers:** For transporting livestock safely and humanely. Specific models and their IDs and detailed descriptions are:
+                            - "3m cattle Trailer (ID: 3m_cattle): This 3-meter cage trailer, available for R700 per day, is engineered for hauling up to 2.5 tons (2500 kg / 5,000 lbs) of cargo. With 4 heavy-duty tires for improved stability and road handling, it’s ideal for both rural and urban use. The trailer's high-sided cage structure provides maximum containment and ventilation, making it perfect for transporting livestock such as goats, sheep, pigs, or small cattle. It's also well-suited for moving farm produce, feed bags, tools, garden waste, or even construction debris — anything that needs to stay secure while in transit. Whether you're a farmer needing a dependable livestock solution or a contractor moving loose materials, this trailer offers a durable and versatile transport option with solid protection and easy loading."
+                            - "4m cattle trailer (ID: 4m_cattle): This livestock trailer is ideal for safely transporting cattle, goats, sheep, or similar farm animals. Priced at R900 per day, it supports a load of up to 2.5 tons (2500 kg / 5,000 lbs) and is built with four sturdy tires for added stability on all types of terrain. Its high steel cage frame provides ventilation while keeping animals securely contained during transit. The open-top design allows for airflow, while the mesh sides prevent animals from jumping or falling out. With a robust, farm-ready build, this trailer is perfect for farmers, livestock traders, or auction transport. Whether you're moving livestock between farms or to market, this trailer is built to handle the job safely, efficiently, and comfortably for the animals."
+                        - **Goods Trailers:** For general cargo, furniture, debris, and equipment. Specific models and their IDs and detailed descriptions are:
+                            - "3 meter Trailer (ID: 3m_lag): This 3-meter utility trailer is ideal for everyday transport needs. With a load capacity of up to 1.5 tons (1500 kg), it’s perfect for carrying garden refuse, small furniture, building materials, and light equipment such as generators or lawnmowers. The mesh sides provide ventilation and security for items like animal feed, tools, or smaller livestock such as goats or sheep. Its single-axle design with two wheels makes it easy to tow, even in tighter spaces. While it’s not suited for carrying cattle, cars, or large machinery, it offers an affordable and practical solution for general hauling tasks at just R500 per day."
+                            - "4 meter trailer (ID: 4m_lag): This 3.6-meter trailer is designed for medium to heavy-duty hauling needs and is available at R650 per day. It features four robust tires on a twin-axle setup, offering increased stability and load-bearing capability. With a weight capacity of up to 2 tons (2000 kg / 4400 pounds), it's ideal for transporting medium livestock such as goats or pigs, building materials, garden refuse, or even multiple water tanks. The mesh sides and enclosed build offer both ventilation and containment, keeping the cargo secure while allowing airflow. Whether you're using it on the farm, construction site, or for general transport, this trailer provides a solid and reliable option for demanding loads."
+                            - "2m Trailer (ID: 2m_lag): This 2-meter trailer is compact yet practical, making it perfect for light-duty hauling needs. Available at just R400 per day, it features a two-tire setup and offers a weight capacity of up to 0.75 tons (750 kg / 1500 pounds). Its smaller size makes it to tow and maneuver, ideal for transporting tools, garden refuse, small equipment, or household items. Whether you're doing weekend DIY projects or light farm duties, this trailer delivers efficiency and convenience in a compact form."
+
+                        Based on the user's specific hauling needs, recommend the SINGLE MOST SUITABLE TRAILER TYPE AND ITS SPECIFIC TRAILER ID. The response MUST adhere to this exact format: "Recommended Trailer: [Trailer Type] (ID: [Trailer ID]). Reason: [Brief Reason about why this type is best for the described need]."
+                        
+                        If the user's request is unrealistic or exceeds the capacity of any available trailer, politely decline and explain why, suggesting they may need specialized commercial transport.
+
+                        User need: ${prompt}`;
+
+                        chatHistory.push({ role: "user", parts: [{ text: llmPrompt }] });
+                        const payload = { contents: chatHistory };
+                        const apiKey = "AIzaSyAcGipQwY4lVmCIQT38coMION5M1B6seDw"; // Your actual API key
+                        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                        const response = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+
+                        // Check for non-200 OK responses
+                        if (!response.ok) {
+                            const errorData = await response.json();
+                            console.error("API Error:", response.status, errorData);
+                            let errorMessage = `API request failed with status ${response.status}.`;
+                            if (errorData.error && errorData.error.message) {
+                                errorMessage += ` Message: ${errorData.error.message}`;
+                            }
+                            recommendationOutput.innerHTML = `<p class="text-red-500">Error: ${errorMessage}. Please try again later.</p>`;
+                            recommendationOutput.classList.remove('hidden');
+                            return; // Exit function if response is not ok
+                        }
+
+
+                        const result = await response.json();
+
+                        if (result.candidates && result.candidates.length > 0 &&
+                            result.candidates[0].content && result.candidates[0].content.parts &&
+                            result.candidates[0].content.parts.length > 0) {
+                            let aiResponseText = result.candidates[0].content.parts[0].text;
+                            
+                            // Extract Trailer ID and Type for dynamic link
+                            const idMatch = aiResponseText.match(/\(ID: (4t_car|2t_car|3m_cattle|4m_cattle|3m_lag|4m_lag|2m_lag)\)/);
+                            let recommendedId = null;
+                            let recommendedType = null; 
+
+                            if (idMatch && idMatch[1]) {
+                                recommendedId = idMatch[1];
+                                const typeMatch = aiResponseText.match(/Recommended Trailer: (.*?)\s+\(ID: (4t_car|2t_car|3m_cattle|4m_cattle|3m_lag|4m_lag|2m_lag)\)/);
+                                if (typeMatch && typeMatch[1]) {
+                                    recommendedType = typeMatch[1].trim();
+                                }
+                                
+                                // Create a clickable span for the ID within the AI's response
+                                // Ensure it's a new element each time to attach new listeners
+                                const clickableIdSpan = document.createElement('span');
+                                clickableIdSpan.className = 'ai-trailer-id-link text-blue-600 underline cursor-pointer';
+                                clickableIdSpan.textContent = `(ID: ${recommendedId})`;
+                                clickableIdSpan.dataset.trailerId = recommendedId;
+                                clickableIdSpan.dataset.trailerType = recommendedType || ''; // Store type for consistency
+
+                                // Replace the original text ID with the new clickable span within the paragraph
+                                // Create a temporary div to parse the AI response text
+                                const tempParagraph = document.createElement('p');
+                                tempParagraph.innerHTML = aiResponseText;
+
+                                // Find the text node containing the ID and replace it
+                                let foundAndReplaced = false;
+                                for (const node of tempParagraph.childNodes) {
+                                    if (node.nodeType === Node.TEXT_NODE && node.textContent.includes(`(ID: ${recommendedId})`)) {
+                                        const parts = node.textContent.split(`(ID: ${recommendedId})`);
+                                        node.textContent = parts[0]; // Text before ID
+                                        node.parentNode.insertBefore(clickableIdSpan, node.nextSibling); // Insert clickable span
+                                        if (parts[1]) { // Text after ID
+                                            const remainingTextNode = document.createTextNode(parts[1]);
+                                            clickableIdSpan.parentNode.insertBefore(remainingTextNode, clickableIdSpan.nextSibling);
+                                        }
+                                        foundAndReplaced = true;
+                                        break; // Stop after first replacement
+                                    }
+                                }
+
+                                // If direct text node replacement didn't work (e.g., if AI wrapped ID in other tags),
+                                // or as a fallback, use innerHTML replacement directly
+                                if (!foundAndReplaced) {
+                                     const clickableIdHtml = `<span class="ai-trailer-id-link text-blue-600 underline cursor-pointer" data-trailer-id="${recommendedId}" data-trailer-type="${recommendedType || ''}">(ID: ${recommendedId})</span>`;
+                                     aiResponseText = aiResponseText.replace(/\(ID: (4t_car|2t_car|3m_cattle|4m_cattle|3m_lag|4m_lag|2m_lag)\)/, clickableIdHtml);
+                                     recommendationOutput.innerHTML = `<p class="font-semibold mb-2">Our Recommendation:</p><p>${aiResponseText}</p>`;
+                                } else {
+                                    // If replaced via DOM manipulation, use the tempParagraph's innerHTML
+                                    recommendationOutput.innerHTML = `<p class="font-semibold mb-2">Our Recommendation:</p><p>${tempParagraph.innerHTML}</p>`;
+                                }
+                                
+                                recommendationOutput.classList.remove('hidden');
+
+                                // Re-attach event listener to the dynamically created link after updating innerHTML
+                                // This is CRUCIAL: Must select the newly rendered element.
+                                const reRenderedLink = recommendationOutput.querySelector('.ai-trailer-id-link');
+                                if (reRenderedLink) {
+                                    reRenderedLink.addEventListener('click', () => {
+                                        const clickedId = reRenderedLink.dataset.trailerId;
+                                        if (clickedId) {
+                                            const targetViewDetailsButton = document.querySelector(`.view-details-btn[data-trailer-id="${clickedId}"]`);
+                                            if (targetViewDetailsButton) {
+                                                // Before clicking the button, ensure its category is active
+                                                let categoryToActivate = 'all'; // Default
+                                                if (clickedId === "4t_car" || clickedId === "2t_car") {
+                                                    categoryToActivate = "car-trailers";
+                                                } else if (clickedId === "3m_cattle" || clickedId === "4m_cattle") {
+                                                    categoryToActivate = "cattle-trailers";
+                                                } else if (clickedId === "3m_lag" || clickedId === "4m_lag" || clickedId === "2m_lag") {
+                                                    categoryToActivate = "goods-trailers";
+                                                }
+
+                                                showCategory(categoryToActivate); // Call showCategory to make the relevant section visible
+                                                
+                                                // Give a small delay for category transition before opening modal
+                                                setTimeout(() => {
+                                                    targetViewDetailsButton.click(); // Trigger the modal
+                                                }, 600); // Slightly longer delay to ensure category is visible first
+                                            } else {
+                                                console.warn(`Could not find 'View Details' button for ID: ${clickedId}.`);
+                                            }
+                                        }
+                                    });
+                                }
+
+                            } else {
+                                // If no ID is matched (e.g., for "turn down" scenarios), just display the AI's response as is.
+                                recommendationOutput.innerHTML = `<p class="font-semibold mb-2">Our Recommendation:</p><p>${aiResponseText}</p>`;
+                                recommendationOutput.classList.remove('hidden');
+                            }
+
+                        } else {
+                            // Handle cases where response structure is unexpected
+                            console.warn("Unexpected API response structure:", result);
+                            recommendationOutput.innerHTML = '<p class="text-red-500">Sorry, I couldn\'t get a clear recommendation. The AI response was empty or malformed. Please try rephrasing your request.</p>';
+                            recommendationOutput.classList.remove('hidden');
+                        }
+                    } catch (error) {
+                        console.error("Network or unexpected error:", error);
+                        recommendationOutput.innerHTML = '<p class="text-red-500">An unexpected error occurred. Please check your internet connection or try again later.</p>';
+                        recommendationOutput.classList.remove('hidden');
+                    } finally {
+                        // Hide loading state
+                        buttonText.textContent = '✨ Get Recommendation';
+                        loadingSpinner.classList.add('hidden');
+                        getRecommendationBtn.disabled = false;
+                    }
+                });
+            } else {
+                console.warn("AI Advisor elements not found. AI Advisor functionality may be impaired.");
+            }
+
+            // --- Geolocation and Directions Logic ---
+            const getDirectionsBtn = document.getElementById('get-directions-btn');
+            const directionsOutput = document.getElementById('directions-output');
+            const directionsLoadingSpinner = document.getElementById('directions-loading-spinner');
+            const directionsButtonText = document.getElementById('directions-button-text');
+
+            const branches = [
+                { name: "Venda Branch", lat: -22.969305, lon: 30.499444, address: "22°58'09.5\"S 30°29'58.0\"E" },
+                { name: "Malamulele Madonsi Branch", lat: -23.016083, lon: 30.715472, address: "23°00'57.9\"S 30°42'55.7\"E" }
+            ];
+
+            // Haversine formula to calculate distance between two lat/lon points
+            function calculateDistance(lat1, lon1, lat2, lon2) {
+                const R = 6371; // Radius of Earth in kilometers
+                const dLat = (lat2 - lat1) * Math.PI / 180;
+                const dLon = (lon2 - lon1) * Math.PI / 180;
+                const a =
+                    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+                const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                const distance = R * c; // Distance in kilometers
+                return distance;
+            }
+
+            if (getDirectionsBtn && directionsOutput && directionsLoadingSpinner && directionsButtonText) {
+                getDirectionsBtn.addEventListener('click', () => {
+                    directionsButtonText.textContent = 'Finding Nearest Branch...';
+                    directionsLoadingSpinner.classList.remove('hidden');
+                    getDirectionsBtn.disabled = true;
+                    directionsOutput.classList.add('hidden');
+
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(
+                            (position) => {
+                                const userLat = position.coords.latitude;
+                                const userLon = position.coords.longitude;
+
+                                let nearestBranch = null;
+                                let minDistance = Infinity;
+
+                                branches.forEach(branch => {
+                                    const distance = calculateDistance(userLat, userLon, branch.lat, branch.lon);
+                                    if (distance < minDistance) {
+                                        minDistance = distance;
+                                        nearestBranch = branch;
+                                    }
+                                });
+
+                                if (nearestBranch) {
+                                    const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${nearestBranch.lat},${nearestBranch.lon}&travelmode=driving`;
+                                    directionsOutput.innerHTML = `
+                                        <p class="font-semibold mb-2">Your nearest branch is:</p>
+                                        <p class="text-blue-800">${nearestBranch.name}</p>
+                                        <p class="text-blue-800 text-sm">${nearestBranch.address}</p>
+                                        <a href="${mapsUrl}" target="_blank" class="inline-block mt-3 text-blue-600 underline hover:text-blue-800">Get Directions on Google Maps</a>
+                                    `;
+                                } else {
+                                    directionsOutput.innerHTML = '<p class="text-red-500">Could not determine nearest branch.</p>';
+                                }
+                                directionsOutput.classList.remove('hidden');
+                                directionsButtonText.textContent = 'Get Directions to Nearest Branch';
+                                directionsLoadingSpinner.classList.add('hidden');
+                                getDirectionsBtn.disabled = false;
+                            },
+                            (error) => {
+                                console.error("Geolocation error:", error);
+                                let errorMessage = "Unable to retrieve your location.";
+                                if (error.code === error.PERMISSION_DENIED) {
+                                    errorMessage = "Location access denied. Please enable location services in your browser settings.";
+                                } else if (error.code === error.POSITION_UNAVAILABLE) {
+                                    errorMessage = "Location information is unavailable.";
+                                } else if (error.code === error.TIMEOUT) {
+                                    errorMessage = "The request to get user location timed out.";
+                                }
+                                directionsOutput.innerHTML = `<p class="text-red-500">${errorMessage}</p>`;
+                                directionsOutput.classList.remove('hidden');
+                                directionsButtonText.textContent = 'Get Directions to Nearest Branch';
+                                directionsLoadingSpinner.classList.add('hidden');
+                                getDirectionsBtn.disabled = false;
+                            },
+                            {
+                                enableHighAccuracy: true,
+                                timeout: 10000,
+                                maximumAge: 0
+                            }
+                        );
+                    } else {
+                        directionsOutput.innerHTML = '<p class="text-red-500">Geolocation is not supported by your browser.</p>';
+                        directionsOutput.classList.remove('hidden');
+                        directionsButtonText.textContent = 'Get Directions to Nearest Branch';
+                        directionsLoadingSpinner.classList.add('hidden');
+                        getDirectionsBtn.disabled = false;
+                    }
+                });
+            } else {
+                console.warn("Directions elements not found. Directions functionality may be impaired.");
+            }
+
+            // --- Modal for Privacy Policy and Terms of Service ---
+            const privacyPolicyLink = document.querySelector('.privacy-policy-link');
+            const termsOfServiceLink = document.querySelector('.terms-of-service-link');
+            const privacyPolicyModal = document.getElementById('privacy-policy-modal');
+            const termsOfServiceModal = document.getElementById('terms-of-service-modal');
+            const closePrivacyPolicyModalBtn = document.getElementById('close-privacy-policy-modal-btn');
+            const closeTermsOfServiceModalBtn = document.getElementById('close-terms-of-service-modal-btn');
+
+            function openModal(modalElement) {
+                modalElement.classList.remove('hidden');
+                modalElement.classList.add('active');
+                document.body.style.overflow = 'hidden'; 
+            }
+
+            function closeModal(modalElement) {
+                modalElement.classList.remove('active');
+                setTimeout(() => modalElement.classList.add('hidden'), 300); 
+                document.body.style.overflow = '';
+            }
+
+            if (privacyPolicyLink) {
+                privacyPolicyLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    openModal(privacyPolicyModal);
+                });
+            }
+
+            if (termsOfServiceLink) {
+                termsOfServiceLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    openModal(termsOfServiceModal);
+                });
+            }
+
+            if (closePrivacyPolicyModalBtn) {
+                closePrivacyPolicyModalBtn.addEventListener('click', () => closeModal(privacyPolicyModal));
+            }
+            if (closeTermsOfServiceModalBtn) {
+                closeTermsOfServiceModalBtn.addEventListener('click', () => closeModal(termsOfServiceModal));
+            }
+
+            // Close modals if clicking outside content
+            if (privacyPolicyModal) {
+                privacyPolicyModal.addEventListener('click', (e) => {
+                    if (e.target === privacyPolicyModal) {
+                        closeModal(privacyPolicyModal);
+                    }
+                });
+            }
+            if (termsOfServiceModal) {
+                termsOfServiceModal.addEventListener('click', (e) => {
+                    if (e.target === termsOfServiceModal) {
+                        closeModal(termsOfServiceModal);
+                    }
+                });
+            }
+
+            // --- Email Form Submission Logic ---
+            const emailContactForm = document.getElementById('email-contact-form');
+            const sendEmailBtn = document.getElementById('send-email-btn');
+            const businessEmail = 'mahomane@gmail.com'; 
+
+            if (emailContactForm && sendEmailBtn) {
+                emailContactForm.addEventListener('submit', function(e) {
+                    e.preventDefault(); 
+
+                    const name = document.getElementById('contact-name').value;
+                    const email = document.getElementById('contact-email').value;
+                    const subject = document.getElementById('contact-subject').value;
+                    const message = document.getElementById('contact-message').value;
+
+                    // Construct the mailto link
+                    const mailtoSubject = encodeURIComponent(`Inquiry from ${name}: ${subject}`);
+                    const mailtoBody = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`);
+                    const mailtoLink = `mailto:${businessEmail}?subject=${mailtoSubject}&body=${mailtoBody}`;
+
+                    // Open the user's default email client
+                    window.location.href = mailtoLink;
+
+                    // Optionally, clear the form after submission
+                    emailContactForm.reset();
+                });
+            } else {
+                console.warn("Email contact form elements not found. Email sending functionality may be impaired.");
+            }
+        });
+    </script>
+</body>
+</html>
